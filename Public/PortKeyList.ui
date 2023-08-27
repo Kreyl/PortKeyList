@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainDialog</class>
+ <widget class="QDialog" name="mainDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>955</width>
+    <height>794</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Регистрация ключа или якоря</string>
+  </property>
+  <widget class="QPushButton" name="btnClear">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>640</y>
+     <width>341</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Стоп, всё, хватит, всё забыть</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../stop 16x16.gif</normaloff>../stop 16x16.gif</iconset>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>0</y>
+     <width>321</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:700;&quot;&gt;Регистрация порт-ключа или якоря&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxQuesse">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>210</y>
+     <width>241</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Регистрация пера дериколя</string>
+   </property>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>100</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Код Пера Дериколя:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditDericol">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Какой он?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBack_3">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>190</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Назад</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../LeftLeft.bmp</normaloff>../LeftLeft.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNext_3">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>190</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>Далее</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../BlueArrowRight.bmp</normaloff>../BlueArrowRight.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Введите код пера дериколя, &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;потраченного на создание артефакта.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btnStart">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>210</y>
+     <width>331</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Начать</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../R.ico</normaloff>../R.ico</iconset>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>321</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Вам предстоит:&lt;/p&gt;&lt;p&gt;1) ввести имя создателя артефакта&lt;/p&gt;&lt;p&gt;2) Выбрать тип артефакта&lt;/p&gt;&lt;p&gt;3) Ввести код пера дериколя&lt;/p&gt;&lt;p&gt;4) В случае порт-ключа - указать место, куда ведёт ключ&lt;/p&gt;&lt;p&gt;5) Ввести код созданного артефакта&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxType">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>20</y>
+     <width>231</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Выбор типа артефакта</string>
+   </property>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Зарегистрировать:</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnPortKey">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>60</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Порт-ключ</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnAnchor">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>90</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Якорь</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNext_2">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>120</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>Далее</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../BlueArrowRight.bmp</normaloff>../BlueArrowRight.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBack_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>120</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Назад</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../LeftLeft.bmp</normaloff>../LeftLeft.bmp</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxName">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>30</y>
+     <width>231</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Имя создателя артефакта</string>
+   </property>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Введите имя создателя артефакта:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditName">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>201</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>Джон Роберт Смит</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNext">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>120</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>Далее</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../BlueArrowRight.bmp</normaloff>../BlueArrowRight.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBack">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>120</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Назад</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../LeftLeft.bmp</normaloff>../LeftLeft.bmp</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxDestination">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>210</y>
+     <width>261</width>
+     <height>271</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Выбор точки выхода</string>
+   </property>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Укажите, куда ведёт порт-ключ.</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnHogwarts">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>К воротам Хогвартса</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnMungo">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ко входу в Мунго</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnDOMP">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ко входу в ДОМП</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnMinistry">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>181</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ко входу в Министерство</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rbtnOtherDestination">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Другое</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditDestination">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>160</y>
+      <width>221</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Куда же?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnShowMap">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>190</y>
+      <width>221</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Выбрать на карте</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNext_4">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>230</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>Далее</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../BlueArrowRight.bmp</normaloff>../BlueArrowRight.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBack_4">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>230</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Назад</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../LeftLeft.bmp</normaloff>../LeftLeft.bmp</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxArtefact">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>530</y>
+     <width>291</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Регистрация артефакта</string>
+   </property>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Код артефакта:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditArtefactID">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Какой он?</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Введите код артефакта с сертификата&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNext_5">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>150</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="text">
+     <string>Далее</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../BlueArrowRight.bmp</normaloff>../BlueArrowRight.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBack_5">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>150</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>Назад</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../LeftLeft.bmp</normaloff>../LeftLeft.bmp</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBoxWhatNext">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>450</y>
+     <width>211</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Что дальше?</string>
+   </property>
+   <widget class="QPushButton" name="btnOneMore">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>161</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ещё один артефакт!</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../lightning16x16.bmp</normaloff>../lightning16x16.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>161</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Закончить наконец</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Checked2.bmp</normaloff>../Checked2.bmp</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Всё готово! Что теперь?</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
