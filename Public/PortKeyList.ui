@@ -6,54 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1089</width>
+    <width>1081</width>
     <height>776</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Регистрация ключа или якоря</string>
+   <string notr="true">Регистрация ключа или якоря</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/MinistryOfMagic.ico</normaloff>img/MinistryOfMagic.ico</iconset>
   </property>
   <widget class="QPushButton" name="btnClear">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>340</y>
-     <width>341</width>
+     <x>160</x>
+     <y>330</y>
+     <width>351</width>
      <height>24</height>
     </rect>
    </property>
    <property name="text">
-    <string>Стоп, всё, хватит, всё забыть</string>
+    <string notr="true">Стоп, всё, хватит, всё забыть</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../stop 16x16.gif</normaloff>../stop 16x16.gif</iconset>
+     <normaloff>img/stop.ico</normaloff>img/stop.ico</iconset>
    </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>180</x>
      <y>0</y>
      <width>321</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:700;&quot;&gt;Регистрация порт-ключа или якоря&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:700;&quot;&gt;Регистрация порт-ключа или якоря&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBoxQuesse">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>540</y>
+     <x>520</x>
+     <y>30</y>
      <width>241</width>
-     <height>231</height>
+     <height>171</height>
     </rect>
    </property>
    <property name="title">
-    <string>Регистрация пера дериколя</string>
+    <string notr="true">Регистрация пера дериколя</string>
    </property>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
@@ -65,7 +69,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Код Пера Дериколя:</string>
+     <string notr="true">Код Пера Дериколя:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditDericol">
@@ -78,7 +82,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Какой он?</string>
+     <string notr="true">Какой он?</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -91,7 +95,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Введите код пера дериколя, потраченного на создание артефакта</string>
+     <string notr="true">Введите код пера дериколя, потраченного на создание артефакта</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -101,14 +105,14 @@
   <widget class="QGroupBox" name="groupBoxType">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>360</y>
+     <x>800</x>
+     <y>590</y>
      <width>231</width>
      <height>161</height>
     </rect>
    </property>
    <property name="title">
-    <string>Выбор типа артефакта</string>
+    <string notr="true">Выбор типа артефакта</string>
    </property>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -120,7 +124,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Зарегистрировать:</string>
+     <string notr="true">Зарегистрировать:</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="rbtnPortKey">
@@ -133,7 +137,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Порт-ключ</string>
+     <string notr="true">Порт-ключ</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -149,7 +153,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Якорь</string>
+     <string notr="true">Якорь</string>
     </property>
    </widget>
   </widget>
@@ -159,14 +163,14 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>40</y>
+     <x>800</x>
+     <y>290</y>
      <width>241</width>
      <height>131</height>
     </rect>
    </property>
    <property name="title">
-    <string>Имя создателя артефакта</string>
+    <string notr="true">Имя создателя артефакта</string>
    </property>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
@@ -178,7 +182,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Введите имя создателя артефакта:</string>
+     <string notr="true">Введите имя создателя артефакта:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditName">
@@ -197,46 +201,46 @@
      </sizepolicy>
     </property>
     <property name="text">
-     <string>Джон Роберт Смит</string>
+     <string notr="true">Джон Роберт Смит</string>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxDestination">
    <property name="geometry">
     <rect>
-     <x>680</x>
-     <y>440</y>
-     <width>261</width>
-     <height>271</height>
+     <x>160</x>
+     <y>380</y>
+     <width>351</width>
+     <height>261</height>
     </rect>
    </property>
    <property name="title">
-    <string>Выбор точки выхода</string>
+    <string notr="true">Выбор точки выхода</string>
    </property>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>20</y>
       <width>181</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Укажите, куда ведёт порт-ключ</string>
+     <string notr="true">Укажите, куда ведёт порт-ключ</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="rbtnHogwarts">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>80</y>
+      <x>160</x>
+      <y>40</y>
       <width>141</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>К воротам Хогвартса</string>
+     <string notr="true">К воротам Хогвартса</string>
     </property>
     <property name="checked">
      <bool>false</bool>
@@ -246,13 +250,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>40</y>
       <width>121</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Ко входу в Мунго</string>
+     <string notr="true">Ко входу в Мунго</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -262,79 +266,95 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
+      <y>60</y>
       <width>121</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Ко входу в ДОМП</string>
+     <string notr="true">Ко входу в ДОМП</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="rbtnMinistry">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>120</y>
+      <x>160</x>
+      <y>60</y>
       <width>181</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Ко входу в Министерство</string>
+     <string notr="true">Ко входу в Министерство</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="rbtnOtherDestination">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>140</y>
+      <y>80</y>
       <width>89</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Другое</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEditDestination">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>160</y>
-      <width>221</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Куда же?</string>
+     <string notr="true">Другое</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnShowMap">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>190</y>
-      <width>221</width>
+      <x>210</x>
+      <y>160</y>
+      <width>131</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>Выбрать на карте</string>
+     <string notr="true">Выбрать на карте</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblDestDescription">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>331</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string notr="true">Нужно не более чем тремя фразами описать место так, чтобы его мог найти тот, кто ни разу там не был. Если место так описать невозможно, то и такой ключ нельзя сделать.</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="TextEditDestination">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>331</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string notr="true">Куда же?</string>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxArtefact">
    <property name="geometry">
     <rect>
-     <x>630</x>
-     <y>40</y>
+     <x>790</x>
+     <y>20</y>
      <width>291</width>
      <height>261</height>
     </rect>
    </property>
    <property name="title">
-    <string>Регистрация артефакта</string>
+    <string notr="true">Регистрация артефакта</string>
    </property>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
@@ -346,7 +366,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Код артефакта:</string>
+     <string notr="true">Код артефакта:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditArtefactID">
@@ -359,7 +379,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Какой он?</string>
+     <string notr="true">Какой он?</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -372,7 +392,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Возьмите из коробки сертификат и введите код с него.</string>
+     <string notr="true">Возьмите из коробки сертификат и введите код с него.</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -391,7 +411,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../!big.ico</pixmap>
+     <pixmap>img/!big.ico</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_12">
@@ -404,7 +424,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>После нажатия кнопки &quot;Закончить&quot; пути назад не будет! Артефакт будет неотменимо зарегистрирован!</string>
+     <string notr="true">После нажатия кнопки &quot;Закончить&quot; пути назад не будет! Артефакт будет неотменимо зарегистрирован!</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -420,25 +440,25 @@
      </rect>
     </property>
     <property name="text">
-     <string>Закончить</string>
+     <string notr="true">Закончить</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Checked2.bmp</normaloff>../Checked2.bmp</iconset>
+      <normaloff>img/Checked2.ico</normaloff>img/Checked2.ico</iconset>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxWhatNext">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>390</y>
+     <x>800</x>
+     <y>430</y>
      <width>211</width>
      <height>151</height>
     </rect>
    </property>
    <property name="title">
-    <string>Что дальше?</string>
+    <string notr="true">Что дальше?</string>
    </property>
    <widget class="QPushButton" name="btnOneMore">
     <property name="geometry">
@@ -450,11 +470,11 @@
      </rect>
     </property>
     <property name="text">
-     <string>Ещё один артефакт!</string>
+     <string notr="true">Ещё один артефакт!</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../lightning16x16.bmp</normaloff>../lightning16x16.bmp</iconset>
+      <normaloff>img/lightning.ico</normaloff>img/lightning.ico</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="btnEnd">
@@ -467,11 +487,11 @@
      </rect>
     </property>
     <property name="text">
-     <string>Я всё</string>
+     <string notr="true">Я всё</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../Checked2.bmp</normaloff>../Checked2.bmp</iconset>
+      <normaloff>img/Checked2.ico</normaloff>img/Checked2.ico</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -484,21 +504,21 @@
      </rect>
     </property>
     <property name="text">
-     <string>Всё готово! Что теперь?</string>
+     <string notr="true">Всё готово! Что теперь?</string>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxStart">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>40</y>
+     <x>160</x>
+     <y>30</y>
      <width>351</width>
      <height>261</height>
     </rect>
    </property>
    <property name="title">
-    <string>Начало</string>
+    <string notr="true">Начало</string>
    </property>
    <widget class="QPushButton" name="btnStart">
     <property name="geometry">
@@ -516,11 +536,11 @@
      <bool>false</bool>
     </property>
     <property name="text">
-     <string>Начать</string>
+     <string notr="true">Начать</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../ahead.bmp</normaloff>../ahead.bmp</iconset>
+      <normaloff>img/Further.ico</normaloff>img/Further.ico</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -533,16 +553,16 @@
      </rect>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Вам предстоит:&lt;/p&gt;&lt;p&gt;1) ввести имя создателя артефакта&lt;/p&gt;&lt;p&gt;2) Выбрать тип артефакта&lt;/p&gt;&lt;p&gt;3) Ввести код пера дериколя&lt;/p&gt;&lt;p&gt;4) В случае порт-ключа - указать место, куда ведёт ключ&lt;/p&gt;&lt;p&gt;5) Ввести код созданного артефакта&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Вам предстоит:&lt;/p&gt;&lt;p&gt;1) ввести имя создателя артефакта&lt;/p&gt;&lt;p&gt;2) Выбрать тип артефакта&lt;/p&gt;&lt;p&gt;3) Ввести код пера дериколя&lt;/p&gt;&lt;p&gt;4) В случае порт-ключа - указать место, куда ведёт ключ&lt;/p&gt;&lt;p&gt;5) Ввести код созданного артефакта&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
   <widget class="QPushButton" name="btnBack">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>310</y>
-     <width>181</width>
+     <x>160</x>
+     <y>300</y>
+     <width>161</width>
      <height>24</height>
     </rect>
    </property>
@@ -550,18 +570,18 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="text">
-    <string>Назад</string>
+    <string notr="true">Назад</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../Back.bmp</normaloff>../Back.bmp</iconset>
+     <normaloff>img/Back.ico</normaloff>img/Back.ico</iconset>
    </property>
   </widget>
   <widget class="QPushButton" name="btnNext">
    <property name="geometry">
     <rect>
-     <x>194</x>
-     <y>310</y>
+     <x>350</x>
+     <y>300</y>
      <width>161</width>
      <height>24</height>
     </rect>
@@ -570,14 +590,35 @@
     <enum>Qt::RightToLeft</enum>
    </property>
    <property name="text">
-    <string>Далее</string>
+    <string notr="true">Далее</string>
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../ahead.bmp</normaloff>../ahead.bmp</iconset>
+     <normaloff>img/Further.ico</normaloff>img/Further.ico</iconset>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>151</width>
+     <height>361</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>img/Back.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="Resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
