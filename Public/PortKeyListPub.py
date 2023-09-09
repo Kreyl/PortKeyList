@@ -2,20 +2,17 @@ import os
 import sys
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
+    QLabel, QMessageBox
 import PKLWindow
 import ctypes
 from datetime import datetime
-import csv
-
-def resource_path(relative):
-    if hasattr(sys, "_MEIPASS"):
-        return os.path.join(sys._MEIPASS, relative)
-    return os.path.join(relative)
 
 # Make App Icon to be candle
 myappid = 'Ostranna Candle Control'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+database_filename = "artedata.txt"
 
 database = []
 
@@ -28,23 +25,65 @@ class DataLine:
     artid = ""
     def to_string(self):
         return self.timestamp + ',' + self.name + ',' + self.artype + ',' + self.dericol + ',' + self.destination + ',' + self.artid + "\r\n"
+    def from_string(self, line):
+        chunks = line.rstrip().split(sep=',')
+        if len(chunks) == 6:
+            self.timestamp = chunks[0]
+            self.name = chunks[1]
+            self.artype = chunks[2]
+            self.dericol = chunks[3]
+            self.destination = chunks[4]
+            self.artid = chunks[5]
+            return True
+        else:
+            return False
+
 
 def load_database():
-    with open("artedata.txt", "r") as datafile:
-        lines = datafile.readlines()
-    for line in lines:
-        dline = DataLine()
-        # try:
-            # dline.timestamp = li
+    database.clear()
+    try:
+        with open(database_filename, "r") as datafile:
+            lines = datafile.readlines()
+        for line in lines[1:]:
+            dline = DataLine()
+            if dline.from_string(line):
+                database.append(dline)
+    except FileNotFoundError:
+        pass
 
-# def check_if_dericol_used(dericol):
-#     for line in database:
-#         if line[]
+def check_if_such_dericol_exists(dericol):
+    for line in database:
+        if line.dericol == dericol:
+            return True
+    return False
+
+def check_if_such_artid_exists(artid):
+    for line in database:
+        if line.artid == artid:
+            return True
+    return False
 
 def append_and_save(dline: DataLine):
     database.append(dline)
+    # Add column names at the beginning of file
+    exists = os.path.exists(database_filename)
     with open("artedata.txt", "a", newline='') as datafile:
+        if not exists:
+            datafile.write('"Время создания","Имя автора","Тип артефакта","Код пера дериколя","Место назначения","Код артефакта"\n')
         datafile.write(dline.to_string())
+
+class WarningDialog(QDialog):
+    def __init__(self, title, message, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        qbtn = QDialogButtonBox.StandardButton.Ok
+        self.buttonBox = QDialogButtonBox(qbtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.layout = QVBoxLayout()
+        message = QLabel(message)
+        self.layout.addWidget(message)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
 
 class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
     grpbxs = []
@@ -73,6 +112,13 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.btn_next_clicked()
 
     def btn_next_clicked(self):
+        # Check if correct data entered
+        if self.grpbxs[self.curr_indx] == self.groupBoxQuesse:
+            s = '"' + self.lineEditDericol.text().lstrip().rstrip() + '"'
+            if check_if_such_dericol_exists(s):
+                QMessageBox.warning(self, "Проблема с пером", "Такое перо дериколя уже зарегистрировано.\nВведите идентификатор другого пера.")
+                return
+        # Proceed
         self.grpbxs[self.curr_indx].hide()
         # Check if show Destination
         self.curr_indx += 2 if self.grpbxs[self.curr_indx] == self.groupBoxQuesse and self.rbtnAnchor.isChecked() else 1
@@ -97,8 +143,15 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.btn_next_clicked()
 
     def btn_complete_clicked(self):
-        # Construct datastring
         line = DataLine()
+        # Check if such artid exists
+        line.artid = '"' + self.lineEditArtefactID.text().lstrip().rstrip() + '"'
+        if check_if_such_artid_exists(line.artid):
+            QMessageBox.warning(self, "Проблема с артефактом",
+                                "Артефакт с таким идентификатором уже зарегистрирован.\n"
+                                "Введите другой идентификатор - возможно, нужно взять из коробки новый.")
+            return
+        # Add other fields
         line.timestamp = '"' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '"'
         line.name =  '"' + self.lineEditName.text() + '"'
         line.artype = '"PortKey"' if self.rbtnPortKey.isChecked() else '"Anchor"'
@@ -114,7 +167,6 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
                 line.destination = '"Ministry Door"'
             elif self.rbtnOtherDestination.isChecked():
                 line.destination = '"' + self.TextEditDestination.toPlainText() + '"'
-        line.artid = '"' + self.lineEditArtefactID.text() + '"'
         append_and_save(line)
         self.btn_next_clicked()
 
@@ -157,6 +209,7 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         # Start the show
         self.restart_and_clear_all()
 
+load_database()
 
 app = QtWidgets.QApplication([])
 
