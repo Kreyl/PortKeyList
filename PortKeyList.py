@@ -1,9 +1,10 @@
 import os
 import sys
 from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize, Qt, QLineF
+from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
-    QLabel, QMessageBox
+    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem
 import PKLWindow
 import ctypes
 from datetime import datetime
@@ -72,18 +73,75 @@ def append_and_save(dline: DataLine):
             datafile.write('"Время создания","Имя автора","Тип артефакта","Код пера дериколя","Место назначения","Код артефакта"\n')
         datafile.write(dline.to_string())
 
-class WarningDialog(QDialog):
-    def __init__(self, title, message, parent=None):
+class MapDialog(QDialog):
+    # Constants
+    coord_step = 20
+    font_sz_pix = 14
+    # Variables
+    # coords_x_max = 0
+
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle(title)
-        qbtn = QDialogButtonBox.StandardButton.Ok
+        self.setWindowTitle("Карта Хогвартса и окрестностей")
+        # Buttons
+        qbtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         self.buttonBox = QDialogButtonBox(qbtn)
         self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        # Map
+        self.maplbl = QtWidgets.QLabel()
+        self.maplbl.setPixmap(QtGui.QPixmap(".\\img/map.png"))
+        # Construct layout
         self.layout = QVBoxLayout()
-        message = QLabel(message)
-        self.layout.addWidget(message)
+        self.layout.addWidget(self.maplbl)
         self.layout.addWidget(self.buttonBox)
         self.setLayout(self.layout)
+        # Show map primitives
+        self.draw_coords()
+
+    def draw_coords(self):
+        canvas = self.maplbl.pixmap()
+        xmax = canvas.width()
+        ymax = canvas.height()
+        painter = QtGui.QPainter(canvas)
+        # Coords
+        # self.coords_x_max = xmax // self.coord_step
+        # Lines
+        pen = QtGui.QPen()
+        pen.setWidth(1)
+        pen.setStyle(Qt.PenStyle.DotLine)
+        pen.setColor(Qt.GlobalColor.darkGray)
+        painter.setPen(pen)
+        for x in range(0, xmax, self.coord_step):
+            painter.drawLine(x, 0, x, ymax)
+        for y in range(0, ymax, self.coord_step):
+            painter.drawLine(0, y, xmax, y)
+        # Letters
+        font = QtGui.QFont()
+        font.setFamily("Comic Sans MS")
+        font.setPixelSize(self.font_sz_pix)
+        painter.setFont(font)
+        pen.setColor(Qt.GlobalColor.white)
+        painter.setPen(pen)
+        xmap = 1
+        ybottom = (ymax // self.coord_step) * self.coord_step - 4
+        for x in range(self.coord_step, xmax, self.coord_step):
+            if xmax - x < self.coord_step:
+                break
+            offset = (self.coord_step // 2) - 4 if xmap <= 9 else 1
+            painter.drawText(x + offset, ybottom, str(xmap))
+            xmap += 1
+        ymap = 1
+        for y in range(self.coord_step - 4, ymax, self.coord_step):
+            if y >= ybottom:
+                break
+            offset = (self.coord_step // 2) - 4 if ymap <= 9 else 4
+            painter.drawText(offset, y, str(ymap))
+            ymap += 1
+        # Done
+        painter.end()
+        self.maplbl.setPixmap(canvas)
+
 
 class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
     grpbxs = []
@@ -106,6 +164,8 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
 
     # ==== Buttons ====
     def btn_start_clicked(self):
+        mapdlg = MapDialog(parent=self)
+        mapdlg.exec()
         self.btnNext.show()
         self.btnBack.show()
         self.btnClear.show()
