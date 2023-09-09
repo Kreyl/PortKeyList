@@ -1,3 +1,3 @@
-Public/.idea/
-Public/__pycache__/
-Public/artedata.txt
+artedata.txt
+.idea/
+__pycache__/
