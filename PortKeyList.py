@@ -1,6 +1,6 @@
 import os
 import sys
-from PyQt6 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtCore import QSize, Qt, QLineF
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
@@ -73,45 +73,40 @@ def append_and_save(dline: DataLine):
             datafile.write('"Время создания","Имя автора","Тип артефакта","Код пера дериколя","Место назначения","Код артефакта"\n')
         datafile.write(dline.to_string())
 
-class MapDialog(QDialog):
+class MapCanvas(QtWidgets.QLabel):
     # Constants
     coord_step = 20
     font_sz_pix = 14
-    # Variables
-    # coords_x_max = 0
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Карта Хогвартса и окрестностей")
-        # Buttons
-        qbtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        self.buttonBox = QDialogButtonBox(qbtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        # Map
-        self.maplbl = QtWidgets.QLabel()
-        self.maplbl.setPixmap(QtGui.QPixmap(".\\img/map.png"))
-        # Construct layout
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.maplbl)
-        self.layout.addWidget(self.buttonBox)
-        self.setLayout(self.layout)
+    def __init__(self):
+        super().__init__()
+        self.setPixmap(QtGui.QPixmap(".\\img/map.png"))
         # Show map primitives
         self.draw_coords()
+        # Coords of prev selected rectangle
+        self.old_map_x, self.old_map_y = None, None
 
-    def draw_coords(self):
-        canvas = self.maplbl.pixmap()
-        xmax = canvas.width()
-        ymax = canvas.height()
-        painter = QtGui.QPainter(canvas)
-        # Coords
-        # self.coords_x_max = xmax // self.coord_step
-        # Lines
+    def get_backgnd_pen(self):
         pen = QtGui.QPen()
         pen.setWidth(1)
         pen.setStyle(Qt.PenStyle.DotLine)
         pen.setColor(Qt.GlobalColor.darkGray)
-        painter.setPen(pen)
+        return pen
+
+    def get_foregnd_pen(self):
+        pen = QtGui.QPen()
+        pen.setWidth(1)
+        pen.setStyle(Qt.PenStyle.DotLine)
+        pen.setColor(Qt.GlobalColor.red)
+        return pen
+
+    def draw_coords(self):
+        canvas = self.pixmap()
+        xmax = canvas.width()
+        ymax = canvas.height()
+        painter = QtGui.QPainter(canvas)
+        # Lines
+        painter.setPen(self.get_backgnd_pen())
         for x in range(0, xmax, self.coord_step):
             painter.drawLine(x, 0, x, ymax)
         for y in range(0, ymax, self.coord_step):
@@ -121,6 +116,8 @@ class MapDialog(QDialog):
         font.setFamily("Comic Sans MS")
         font.setPixelSize(self.font_sz_pix)
         painter.setFont(font)
+        pen = QtGui.QPen()
+        pen.setWidth(1)
         pen.setColor(Qt.GlobalColor.white)
         painter.setPen(pen)
         xmap = 1
@@ -140,8 +137,52 @@ class MapDialog(QDialog):
             ymap += 1
         # Done
         painter.end()
-        self.maplbl.setPixmap(canvas)
+        self.setPixmap(canvas)
 
+    def map_rect(self, map_x, map_y) -> QtCore.QRectF:
+        xf = map_x * self.coord_step
+        yf = (map_y - 1) * self.coord_step
+        return QtCore.QRectF(xf, yf, self.coord_step, self.coord_step)
+
+    def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
+        pix_x = a0.position().x()
+        pix_y = a0.position().y()
+        map_x = pix_x // self.coord_step
+        map_y = pix_y // self.coord_step + 1
+        # === Drawing ===
+        canvas = self.pixmap()
+        painter = QtGui.QPainter(canvas)
+        # Hide prev rect if any
+        if self.old_map_x is not None:
+            # pen.setColor(Qt.GlobalColor.red)
+            painter.setPen(self.get_backgnd_pen())
+            painter.drawRect(self.map_rect(self.old_map_x, self.old_map_y))
+        # Draw selected rect
+        painter.setPen(self.get_foregnd_pen())
+        painter.drawRect(self.map_rect(map_x, map_y))
+        painter.end()
+        self.setPixmap(canvas)
+        # Save coords
+        self.old_map_x = map_x
+        self.old_map_y = map_y
+
+class MapDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Карта Хогвартса и окрестностей")
+        # Buttons
+        qbtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        self.buttonBox = QDialogButtonBox(qbtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        # Map
+        self.maplbl = MapCanvas()
+
+        # Construct layout
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.maplbl)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
 
 class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
     grpbxs = []
