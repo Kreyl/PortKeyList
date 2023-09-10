@@ -4,7 +4,7 @@ from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtCore import QSize, Qt, QLineF
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
-    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem
+    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem, QStackedLayout
 import PKLWindow
 import ctypes
 from datetime import datetime
@@ -80,9 +80,10 @@ class MapCanvas(QtWidgets.QLabel):
 
     def __init__(self):
         super().__init__()
-        self.setPixmap(QtGui.QPixmap(".\\img/map.png"))
-        # Show map primitives
-        self.draw_coords()
+        # Show map
+        self.bottom_pix = QtGui.QPixmap(".\\img/map.png")
+        self.draw_coords() # Show map primitives
+        self.setPixmap(self.bottom_pix)
         # Coords of prev selected rectangle
         self.old_map_x, self.old_map_y = None, None
 
@@ -96,15 +97,14 @@ class MapCanvas(QtWidgets.QLabel):
     def get_foregnd_pen(self):
         pen = QtGui.QPen()
         pen.setWidth(1)
-        pen.setStyle(Qt.PenStyle.DotLine)
+        pen.setStyle(Qt.PenStyle.SolidLine)
         pen.setColor(Qt.GlobalColor.red)
         return pen
 
     def draw_coords(self):
-        canvas = self.pixmap()
-        xmax = canvas.width()
-        ymax = canvas.height()
-        painter = QtGui.QPainter(canvas)
+        xmax = self.bottom_pix.width()
+        ymax = self.bottom_pix.height()
+        painter = QtGui.QPainter(self.bottom_pix)
         # Lines
         painter.setPen(self.get_backgnd_pen())
         for x in range(0, xmax, self.coord_step):
@@ -137,7 +137,6 @@ class MapCanvas(QtWidgets.QLabel):
             ymap += 1
         # Done
         painter.end()
-        self.setPixmap(canvas)
 
     def map_rect(self, map_x, map_y) -> QtCore.QRectF:
         xf = map_x * self.coord_step
@@ -150,13 +149,14 @@ class MapCanvas(QtWidgets.QLabel):
         map_x = pix_x // self.coord_step
         map_y = pix_y // self.coord_step + 1
         # === Drawing ===
+        self.setPixmap(self.bottom_pix)
         canvas = self.pixmap()
         painter = QtGui.QPainter(canvas)
         # Hide prev rect if any
-        if self.old_map_x is not None:
-            # pen.setColor(Qt.GlobalColor.red)
-            painter.setPen(self.get_backgnd_pen())
-            painter.drawRect(self.map_rect(self.old_map_x, self.old_map_y))
+        # if self.old_map_x is not None:
+        #     # pen.setColor(Qt.GlobalColor.red)
+        #     painter.setPen(self.get_backgnd_pen())
+        #     painter.drawRect(self.map_rect(self.old_map_x, self.old_map_y))
         # Draw selected rect
         painter.setPen(self.get_foregnd_pen())
         painter.drawRect(self.map_rect(map_x, map_y))
@@ -177,7 +177,6 @@ class MapDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
         # Map
         self.maplbl = MapCanvas()
-
         # Construct layout
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.maplbl)
