@@ -69,6 +69,9 @@
      </rect>
     </property>
     <property name="text">
+     <string notr="true"/>
+    </property>
+    <property name="placeholderText">
      <string notr="true">Какой он?</string>
     </property>
    </widget>
@@ -188,6 +191,9 @@
      </sizepolicy>
     </property>
     <property name="text">
+     <string notr="true"/>
+    </property>
+    <property name="placeholderText">
      <string notr="true">Джон Роберт Смит</string>
     </property>
    </widget>
@@ -327,6 +333,9 @@
      </rect>
     </property>
     <property name="plainText">
+     <string notr="true"/>
+    </property>
+    <property name="placeholderText">
      <string notr="true">Куда же?</string>
     </property>
    </widget>
@@ -366,6 +375,9 @@
      </rect>
     </property>
     <property name="text">
+     <string notr="true"/>
+    </property>
+    <property name="placeholderText">
      <string notr="true">Какой он?</string>
     </property>
    </widget>

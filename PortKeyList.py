@@ -81,9 +81,10 @@ def descr_append_and_save(x, y, txt):
         datafile.write('"{0}","{1}","{2}"\n'.format(x, y, txt))
 
 def clear_string(s):
-    while s[0] in ('"', ' ', '\r', '\n'):
+    chars_to_remove = ('"', ' ', '\r', '\n', "'", ',', '.')
+    while len(s) != 0 and s[0] in chars_to_remove:
         s = s[1:]
-    while s[-1] in ('"', ' ', '\r', '\n'):
+    while len(s) != 0 and s[-1] in chars_to_remove:
         s = s[:-1]
     return s
 def load_map_descr():
@@ -318,34 +319,50 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
     def restart_and_clear_all(self):
         for wdt in self.grpbxs:
             wdt.hide()
-        self.lineEditDericol.setText("Какой он?")
-        self.TextEditDestination.setPlainText("Куда же?")
-        self.lineEditArtefactID.setText("Какой он?")
+        self.lineEditDericol.clear()
+        self.TextEditDestination.clear()
+        self.lineEditArtefactID.clear()
         self.rbtnMungo.setChecked(True)
         self.rbtn_destination_clicked()
         self.btnNext.hide()
         self.btnBack.hide()
         self.btnClear.hide()
-        self.lineEditName.setText("Джон Роберт Смит")
+        self.lineEditName.clear()
         self.curr_indx = 0
         self.grpbxs[self.curr_indx].show()
 
     # ==== Buttons ====
     def btn_start_clicked(self):
-        mapdlg = MapDialog(parent=self)
-        mapdlg.exec()
-        # self.btnNext.show()
-        # self.btnBack.show()
-        # self.btnClear.show()
-        # self.btn_next_clicked()
+        self.btnNext.show()
+        self.btnBack.show()
+        self.btnClear.show()
+        self.btn_next_clicked()
 
     def btn_next_clicked(self):
         # Check if correct data entered
-        if self.grpbxs[self.curr_indx] == self.groupBoxQuesse:
-            s = '"' + self.lineEditDericol.text().lstrip().rstrip() + '"'
-            if check_if_such_dericol_exists(s):
-                QMessageBox.warning(self, "Проблема с пером", "Такое перо дериколя уже зарегистрировано.\nВведите идентификатор другого пера.")
+        if self.grpbxs[self.curr_indx] == self.groupBoxName:
+            txt = clear_string(self.lineEditName.text())
+            if txt == "":
+                QMessageBox.warning(self, "Проблема с именем", "У автора должно быть имя.\nВведите имя автора артефакта.")
                 return
+
+        elif self.grpbxs[self.curr_indx] == self.groupBoxQuesse:
+            txt = clear_string(self.lineEditDericol.text())
+            if txt == "":
+                QMessageBox.warning(self, "Проблема с пером", "У пера дериколя должен быть код.\nВведите код пера.")
+                return
+            txt = '"' + txt + '"'
+            if check_if_such_dericol_exists(txt):
+                QMessageBox.warning(self, "Проблема с пером", "Такое перо дериколя уже зарегистрировано.\nВведите код другого пера.")
+                return
+
+        elif self.grpbxs[self.curr_indx] == self.groupBoxDestination and self.rbtnOtherDestination.isChecked():
+            txt = clear_string(self.TextEditDestination.toPlainText())
+            if txt == "":
+                QMessageBox.warning(self, "Проблема с местом назначения", "Описание места назначения не может быть пустым.\n"
+                                                                          "Введите описание места назначения.")
+                return
+
         # Proceed
         self.grpbxs[self.curr_indx].hide()
         # Check if show Destination
@@ -371,9 +388,13 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.btn_next_clicked()
 
     def btn_complete_clicked(self):
+        txt = clear_string(self.lineEditArtefactID.text())
+        if txt == "":
+            QMessageBox.warning(self, "Проблема с артефактом", "У артефакта должен быть код .\nВведите код артефакта.")
+            return
         line = DataLine()
         # Check if such artid exists
-        line.artid = '"' + self.lineEditArtefactID.text().lstrip().rstrip() + '"'
+        line.artid = '"' + txt + '"'
         if check_if_such_artid_exists(line.artid):
             QMessageBox.warning(self, "Проблема с артефактом",
                                 "Артефакт с таким идентификатором уже зарегистрирован.\n"
@@ -381,20 +402,20 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
             return
         # Add other fields
         line.timestamp = '"' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '"'
-        line.name =  '"' + self.lineEditName.text() + '"'
+        line.name =  '"' + clear_string(self.lineEditName.text()) + '"'
         line.artype = '"PortKey"' if self.rbtnPortKey.isChecked() else '"Anchor"'
-        line.dericol = '"' + self.lineEditDericol.text() + '"'
+        line.dericol = '"' + clear_string(self.lineEditDericol.text()) + '"'
         if self.rbtnPortKey.isChecked():
             if self.rbtnMungo.isChecked():
-                line.destination = '"Mungo"'
+                line.destination = '"Ко входу в Мунго"'
             elif self.rbtnHogwarts.isChecked():
-                line.destination = '"Hogwarts Gate"'
+                line.destination = '"К воротам Хогвартса"'
             elif self.rbtnDOMP.isChecked():
-                line.destination = '"DOMP"'
+                line.destination = '"Ко входу в ДОМП"'
             elif self.rbtnMinistry.isChecked():
-                line.destination = '"Ministry Door"'
+                line.destination = '"Ко входу в Министерство"'
             elif self.rbtnOtherDestination.isChecked():
-                line.destination = '"' + self.TextEditDestination.toPlainText() + '"'
+                line.destination = '"' + clear_string(self.TextEditDestination.toPlainText()) + '"'
         append_and_save(line)
         self.btn_next_clicked()
 
@@ -407,6 +428,14 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
             self.lblDestDescription.hide()
             self.btnShowMap.hide()
             self.TextEditDestination.hide()
+
+    def btn_showmap_clicked(self):
+        dlg = MapDialog(parent=self)
+        if dlg.exec():
+            txt = self.TextEditDestination.toPlainText()
+            if len(txt) != 0:
+                txt += ' '
+            self.TextEditDestination.setPlainText(txt + "Карта: x={0}; y={1}".format(dlg.x, dlg.y))
 
     # ==== Constructor ====
     def __init__(self):
@@ -425,6 +454,7 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.btnClear.clicked.connect(self.btn_clear_clicked)
         self.btnNext.clicked.connect(self.btn_next_clicked)
         self.btnBack.clicked.connect(self.btn_back_clicked)
+        self.btnShowMap.clicked.connect(self.btn_showmap_clicked)
         self.btnComplete.clicked.connect(self.btn_complete_clicked)
         self.btnOneMore.clicked.connect(self.btn_one_more_clicked)
         self.btnEnd.clicked.connect(self.btn_clear_clicked)
