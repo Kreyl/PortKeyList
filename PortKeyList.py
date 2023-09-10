@@ -131,10 +131,12 @@ class MapCanvas(QtWidgets.QLabel):
     mapclicked = pyqtSignal(int, int)
     def __init__(self):
         super().__init__()
+        # Pixmaps: clean one, with coords, with description, with both of them
         self.clean_pix = QtGui.QPixmap(".\\img/map.png")
         self.coords_pix = QtGui.QPixmap(".\\img/map.png")
         self.descr_pix = QtGui.QPixmap(".\\img/map.png")
         self.coords_descr_pix = QtGui.QPixmap(".\\img/map.png")
+        # Variables
         self.must_show_coords = True
         self.must_show_descrip = True
         self.map_x = None
@@ -223,10 +225,25 @@ class MapCanvas(QtWidgets.QLabel):
             self.setPixmap(self.descr_pix)
         else:
             self.setPixmap(self.clean_pix)
+
+    def draw_rect(self):
+        canvas = self.pixmap()
+        painter = QtGui.QPainter(canvas)
+        # Draw selected rect
+        painter.setPen(self.get_foregnd_pen())
+        x = self.map_x * self.coord_step
+        y = (self.map_y - 1) * self.coord_step
+        painter.drawRect(x, y, self.coord_step, self.coord_step)
+        painter.end()
+        self.setPixmap(canvas)
+
     def on_map_settings_change(self, show_coords, show_descrip):
         self.must_show_coords = show_coords
         self.must_show_descrip = show_descrip
         self.redraw_needed_map()
+        # Redraw what selected
+        if self.map_x is not None:
+            self.draw_rect()
 
     def on_rightbtn_click(self, x, y):
         dlg = DescDialog(x, y, parent=self)
@@ -250,22 +267,13 @@ class MapCanvas(QtWidgets.QLabel):
             self.on_rightbtn_click(pix_x, pix_y)
             return
         # Otherwise proceed
-        map_x = pix_x // self.coord_step
-        map_y = pix_y // self.coord_step + 1
-        # Show clean map
+        self.map_x = pix_x // self.coord_step
+        self.map_y = pix_y // self.coord_step + 1
+        # Show clean map and draw rect
         self.redraw_needed_map()
-        # === Drawing ===
-        canvas = self.pixmap()
-        painter = QtGui.QPainter(canvas)
-        # Draw selected rect
-        painter.setPen(self.get_foregnd_pen())
-        x = map_x * self.coord_step
-        y = (map_y - 1) * self.coord_step
-        painter.drawRect(x, y, self.coord_step, self.coord_step)
-        painter.end()
-        self.setPixmap(canvas)
+        self.draw_rect()
         # Emit signal
-        self.mapclicked.emit(int(map_x), int(map_y))
+        self.mapclicked.emit(self.map_x, self.map_y)
 
 class MapDialog(QDialog):
     # Variables to export
