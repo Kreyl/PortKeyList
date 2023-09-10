@@ -14,6 +14,7 @@ myappid = 'Ostranna Candle Control'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 database_filename = "artedata.txt"
+mapdata_filename = "mapdata.txt"
 
 database = []
 
@@ -67,12 +68,61 @@ def append_and_save(dline: DataLine):
     database.append(dline)
     # Add column names at the beginning of file
     exists = os.path.exists(database_filename)
-    with open("artedata.txt", "a", newline='') as datafile:
+    with open(database_filename, "a", newline='') as datafile:
         if not exists:
             datafile.write('"Время создания","Имя автора","Тип артефакта","Код пера дериколя","Место назначения","Код артефакта"\n')
         datafile.write(dline.to_string())
 
+Descr = []
+
+def descr_append_and_save(x, y, txt):
+    Descr.append([x, y, txt])
+    with open(mapdata_filename, "a") as datafile:
+        datafile.write('"{0}","{1}","{2}"\n'.format(x, y, txt))
+
+def clear_string(s):
+    while s[0] in ('"', ' ', '\r', '\n'):
+        s = s[1:]
+    while s[-1] in ('"', ' ', '\r', '\n'):
+        s = s[:-1]
+    return s
+def load_map_descr():
+    Descr.clear()
+    try:
+        with open(mapdata_filename, "r") as datafile:
+            lines = datafile.readlines()
+        for line in lines:
+            chunks = line.split(sep=',')
+            if len(chunks) != 3:
+                continue
+            x = int(clear_string(chunks[0]))
+            y = int(clear_string(chunks[1]))
+            txt = clear_string(chunks[2])
+            Descr.append([x, y, txt])
+    except FileNotFoundError:
+        pass
+
+class DescDialog(QDialog):
+    def __init__(self, x, y, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Введите описание")
+        self.lblCoords = QtWidgets.QLabel()
+        self.lblCoords.setText("x={0}; y={1}".format(x, y))
+        self.lineeditDescr = QtWidgets.QLineEdit()
+        # Buttons
+        qbtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        self.buttonBox = QDialogButtonBox(qbtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        # Construct main layout
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.lblCoords)
+        self.layout.addWidget(self.lineeditDescr)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
+
 class MapCanvas(QtWidgets.QLabel):
+    # Constants
     coord_step = 20
     font_sz_pix = 14
 
@@ -82,12 +132,19 @@ class MapCanvas(QtWidgets.QLabel):
         super().__init__()
         self.clean_pix = QtGui.QPixmap(".\\img/map.png")
         self.coords_pix = QtGui.QPixmap(".\\img/map.png")
+        self.descr_pix = QtGui.QPixmap(".\\img/map.png")
+        self.coords_descr_pix = QtGui.QPixmap(".\\img/map.png")
         self.must_show_coords = True
         self.must_show_descrip = True
         self.map_x = None
         self.map_y = None
-        self.draw_coords() # Show map primitives
-        self.setPixmap(self.coords_pix)
+        # Show map primitives
+        self.draw_coords(self.coords_pix)
+        self.draw_coords(self.coords_descr_pix)
+        self.draw_descr(self.descr_pix)
+        self.draw_descr(self.coords_descr_pix)
+        # Show what needed
+        self.redraw_needed_map()
 
     def get_backgnd_pen(self):
         pen = QtGui.QPen()
@@ -103,10 +160,20 @@ class MapCanvas(QtWidgets.QLabel):
         pen.setColor(Qt.GlobalColor.red)
         return pen
 
-    def draw_coords(self):
-        xmax = self.coords_pix.width()
-        ymax = self.coords_pix.height()
-        painter = QtGui.QPainter(self.coords_pix)
+    def prepare_descr_font(self, painter):
+        font = QtGui.QFont()
+        font.setFamily("Comic Sans MS")
+        font.setPixelSize(self.font_sz_pix)
+        painter.setFont(font)
+        pen = QtGui.QPen()
+        pen.setWidth(1)
+        pen.setColor(Qt.GlobalColor.white)
+        painter.setPen(pen)
+
+    def draw_coords(self, apixmap):
+        xmax = apixmap.width()
+        ymax = apixmap.height()
+        painter = QtGui.QPainter(apixmap)
         # Lines
         painter.setPen(self.get_backgnd_pen())
         for x in range(0, xmax, self.coord_step):
@@ -137,12 +204,22 @@ class MapCanvas(QtWidgets.QLabel):
             offset = (self.coord_step // 2) - 4 if ymap <= 9 else 4
             painter.drawText(offset, y, str(ymap))
             ymap += 1
-        # Done
+        painter.end()
+
+    def draw_descr(self, apixmap):
+        painter = QtGui.QPainter(apixmap)
+        self.prepare_descr_font(painter) # Setup font
+        for d in Descr:
+            painter.drawText(d[0], d[1], d[2])
         painter.end()
 
     def redraw_needed_map(self):
-        if self.must_show_coords:
+        if self.must_show_coords and self.must_show_descrip:
+            self.setPixmap(self.coords_descr_pix)
+        elif self.must_show_coords:
             self.setPixmap(self.coords_pix)
+        elif self.must_show_descrip:
+            self.setPixmap(self.descr_pix)
         else:
             self.setPixmap(self.clean_pix)
     def on_map_settings_change(self, show_coords, show_descrip):
@@ -150,9 +227,28 @@ class MapCanvas(QtWidgets.QLabel):
         self.must_show_descrip = show_descrip
         self.redraw_needed_map()
 
-    def mousePressEvent(self, a0: QtGui.QMouseEvent):
-        pix_x = a0.position().x()
-        pix_y = a0.position().y()
+    def on_rightbtn_click(self, x, y):
+        dlg = DescDialog(x, y, parent=self)
+        if dlg.exec():
+            txt = dlg.lineeditDescr.text()
+            descr_append_and_save(x, y, txt)
+            # Draw on descr and coords_descr
+            painter = QtGui.QPainter(self.descr_pix)
+            self.prepare_descr_font(painter)
+            painter.drawText(x, y, txt)
+            painter = QtGui.QPainter(self.coords_descr_pix)
+            self.prepare_descr_font(painter)
+            painter.drawText(x, y, txt)
+            # Show what needed
+            self.redraw_needed_map()
+
+    def mousePressEvent(self, evt: QtGui.QMouseEvent):
+        pix_x = int(round(evt.position().x()))
+        pix_y = int(round(evt.position().y()))
+        if evt.button() == Qt.MouseButton.RightButton:
+            self.on_rightbtn_click(pix_x, pix_y)
+            return
+        # Otherwise proceed
         map_x = pix_x // self.coord_step
         map_y = pix_y // self.coord_step + 1
         # Show clean map
@@ -162,9 +258,9 @@ class MapCanvas(QtWidgets.QLabel):
         painter = QtGui.QPainter(canvas)
         # Draw selected rect
         painter.setPen(self.get_foregnd_pen())
-        xf = map_x * self.coord_step
-        yf = (map_y - 1) * self.coord_step
-        painter.drawRect(QtCore.QRectF(xf, yf, self.coord_step, self.coord_step))
+        x = map_x * self.coord_step
+        y = (map_y - 1) * self.coord_step
+        painter.drawRect(x, y, self.coord_step, self.coord_step)
         painter.end()
         self.setPixmap(canvas)
         # Emit signal
@@ -238,10 +334,10 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
     def btn_start_clicked(self):
         mapdlg = MapDialog(parent=self)
         mapdlg.exec()
-        self.btnNext.show()
-        self.btnBack.show()
-        self.btnClear.show()
-        self.btn_next_clicked()
+        # self.btnNext.show()
+        # self.btnBack.show()
+        # self.btnClear.show()
+        # self.btn_next_clicked()
 
     def btn_next_clicked(self):
         # Check if correct data entered
@@ -342,6 +438,7 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.restart_and_clear_all()
 
 load_database()
+load_map_descr()
 
 app = QtWidgets.QApplication([])
 
