@@ -1,10 +1,10 @@
 import os
 import sys
 from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtCore import QSize, Qt, QLineF
+from PyQt6.QtCore import QSize, Qt, QLineF, pyqtSignal
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
-    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem, QStackedLayout
+    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem, QStackedLayout, QHBoxLayout
 import PKLWindow
 import ctypes
 from datetime import datetime
@@ -38,7 +38,6 @@ class DataLine:
             return True
         else:
             return False
-
 
 def load_database():
     database.clear()
@@ -74,18 +73,21 @@ def append_and_save(dline: DataLine):
         datafile.write(dline.to_string())
 
 class MapCanvas(QtWidgets.QLabel):
-    # Constants
     coord_step = 20
     font_sz_pix = 14
 
+    # Signals
+    mapclicked = pyqtSignal(int, int)
     def __init__(self):
         super().__init__()
-        # Show map
-        self.bottom_pix = QtGui.QPixmap(".\\img/map.png")
+        self.clean_pix = QtGui.QPixmap(".\\img/map.png")
+        self.coords_pix = QtGui.QPixmap(".\\img/map.png")
+        self.must_show_coords = True
+        self.must_show_descrip = True
+        self.map_x = None
+        self.map_y = None
         self.draw_coords() # Show map primitives
-        self.setPixmap(self.bottom_pix)
-        # Coords of prev selected rectangle
-        self.old_map_x, self.old_map_y = None, None
+        self.setPixmap(self.coords_pix)
 
     def get_backgnd_pen(self):
         pen = QtGui.QPen()
@@ -102,9 +104,9 @@ class MapCanvas(QtWidgets.QLabel):
         return pen
 
     def draw_coords(self):
-        xmax = self.bottom_pix.width()
-        ymax = self.bottom_pix.height()
-        painter = QtGui.QPainter(self.bottom_pix)
+        xmax = self.coords_pix.width()
+        ymax = self.coords_pix.height()
+        painter = QtGui.QPainter(self.coords_pix)
         # Lines
         painter.setPen(self.get_backgnd_pen())
         for x in range(0, xmax, self.coord_step):
@@ -138,35 +140,47 @@ class MapCanvas(QtWidgets.QLabel):
         # Done
         painter.end()
 
-    def map_rect(self, map_x, map_y) -> QtCore.QRectF:
-        xf = map_x * self.coord_step
-        yf = (map_y - 1) * self.coord_step
-        return QtCore.QRectF(xf, yf, self.coord_step, self.coord_step)
+    def redraw_needed_map(self):
+        if self.must_show_coords:
+            self.setPixmap(self.coords_pix)
+        else:
+            self.setPixmap(self.clean_pix)
+    def on_map_settings_change(self, show_coords, show_descrip):
+        self.must_show_coords = show_coords
+        self.must_show_descrip = show_descrip
+        self.redraw_needed_map()
 
-    def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
+    def mousePressEvent(self, a0: QtGui.QMouseEvent):
         pix_x = a0.position().x()
         pix_y = a0.position().y()
         map_x = pix_x // self.coord_step
         map_y = pix_y // self.coord_step + 1
+        # Show clean map
+        self.redraw_needed_map()
         # === Drawing ===
-        self.setPixmap(self.bottom_pix)
         canvas = self.pixmap()
         painter = QtGui.QPainter(canvas)
-        # Hide prev rect if any
-        # if self.old_map_x is not None:
-        #     # pen.setColor(Qt.GlobalColor.red)
-        #     painter.setPen(self.get_backgnd_pen())
-        #     painter.drawRect(self.map_rect(self.old_map_x, self.old_map_y))
         # Draw selected rect
         painter.setPen(self.get_foregnd_pen())
-        painter.drawRect(self.map_rect(map_x, map_y))
+        xf = map_x * self.coord_step
+        yf = (map_y - 1) * self.coord_step
+        painter.drawRect(QtCore.QRectF(xf, yf, self.coord_step, self.coord_step))
         painter.end()
         self.setPixmap(canvas)
-        # Save coords
-        self.old_map_x = map_x
-        self.old_map_y = map_y
+        # Emit signal
+        self.mapclicked.emit(int(map_x), int(map_y))
 
 class MapDialog(QDialog):
+    # Variables to export
+    x, y = None, None
+    def on_selection(self, x, y):
+        self.lblWhatSelected.setText("Выбрано: x={0}; y={1}".format(x, y))
+        self.x = x
+        self.y = y
+
+    def on_settings_change(self, checked):
+        self.maplbl.on_map_settings_change(self.cbShowGrid.isChecked(), self.cbShowDesctrip.isChecked())
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Карта Хогвартса и окрестностей")
@@ -177,10 +191,28 @@ class MapDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
         # Map
         self.maplbl = MapCanvas()
-        # Construct layout
+        self.maplbl.mapclicked.connect(self.on_selection)
+        # Settings
+        self.cbShowGrid = QtWidgets.QCheckBox()
+        self.cbShowGrid.setText("Координатная сетка")
+        self.cbShowGrid.setChecked(True)
+        self.cbShowGrid.clicked.connect(self.on_settings_change)
+        self.cbShowDesctrip = QtWidgets.QCheckBox()
+        self.cbShowDesctrip.setText("Что где")
+        self.cbShowDesctrip.setChecked(True)
+        self.cbShowDesctrip.clicked.connect(self.on_settings_change)
+        # Selection
+        self.lblWhatSelected = QtWidgets.QLabel()
+        # Construct bottom layout
+        self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.addWidget(self.cbShowGrid)
+        self.bottom_layout.addWidget(self.cbShowDesctrip)
+        self.bottom_layout.addWidget(self.lblWhatSelected)
+        self.bottom_layout.addWidget(self.buttonBox)
+        # Construct main layout
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.maplbl)
-        self.layout.addWidget(self.buttonBox)
+        self.layout.addLayout(self.bottom_layout)
         self.setLayout(self.layout)
 
 class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
