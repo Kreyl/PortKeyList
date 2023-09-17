@@ -1,8 +1,10 @@
-from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QDialogButtonBox, QVBoxLayout, QDialog
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QDialogButtonBox, QVBoxLayout, QDialog
 
 from kl_strings import clear_string
+
+map_file_name = ".\\img/map.png"
 
 class AnnotationDialog(QDialog):
     def __init__(self, x, y, parent=None):
@@ -56,12 +58,13 @@ class MapWidget(QtWidgets.QLabel):
 
     def __init__(self, annotns_filename):
         super().__init__()
+
         self.Annotns_filename = annotns_filename
         # Pixmaps: clean one, with coords, with description, with both of them
-        self.clean_pix = QtGui.QPixmap(".\\img/map.png")
-        self.coords_pix = QtGui.QPixmap(".\\img/map.png")
-        self.annot_pix = QtGui.QPixmap(".\\img/map.png")
-        self.coords_annot_pix = QtGui.QPixmap(".\\img/map.png")
+        self.clean_pix = QtGui.QPixmap(map_file_name)
+        self.coords_pix = QtGui.QPixmap(map_file_name)
+        self.annot_pix = QtGui.QPixmap(map_file_name)
+        self.coords_annot_pix = QtGui.QPixmap(map_file_name)
         # Variables
         self.must_show_coords = True
         self.must_show_annot = True
@@ -188,8 +191,8 @@ class MapWidget(QtWidgets.QLabel):
             self.redraw_needed_map()
 
     def mousePressEvent(self, evt: QtGui.QMouseEvent):
-        pix_x = int(round(evt.position().x()))
-        pix_y = int(round(evt.position().y()))
+        pix_x = int(round(evt.x()))
+        pix_y = int(round(evt.y()))
         if evt.button() == Qt.MouseButton.RightButton:
             self.on_rightbtn_click(pix_x, pix_y)
             return

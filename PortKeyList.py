@@ -1,7 +1,7 @@
 import os
-from PyQt6 import QtWidgets
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QDialog, QDialogButtonBox, QVBoxLayout, QMessageBox, QHBoxLayout
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QMainWindow, QDialog, QDialogButtonBox, QVBoxLayout, QMessageBox, QHBoxLayout
 import PKLWindow
 import ctypes
 from datetime import datetime
