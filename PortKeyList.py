@@ -1,16 +1,15 @@
 import os
-import sys
-from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtCore import QSize, Qt, QLineF, pyqtSignal
-from PyQt6.QtGui import QImage, QPixmap
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGroupBox, QDialog, QDialogButtonBox, QVBoxLayout, \
-    QLabel, QMessageBox, QGraphicsView, QGraphicsScene, QGraphicsLineItem, QStackedLayout, QHBoxLayout
+from PyQt6 import QtWidgets
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QMainWindow, QDialog, QDialogButtonBox, QVBoxLayout, QMessageBox, QHBoxLayout
 import PKLWindow
 import ctypes
 from datetime import datetime
+from MapWidget import MapWidget
+from kl_strings import clear_string
 
 # Make App Icon to be candle
-myappid = 'Ostranna Candle Control'
+myappid = 'PortKeyList'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 database_filename = "artedata.txt"
@@ -73,208 +72,6 @@ def append_and_save(dline: DataLine):
             datafile.write('"Время создания","Имя автора","Тип артефакта","Код пера дериколя","Место назначения","Код артефакта"\n')
         datafile.write(dline.to_string())
 
-Descr = []
-
-def descr_append_and_save(x, y, txt):
-    Descr.append([x, y, txt])
-    with open(mapdata_filename, "a") as datafile:
-        datafile.write('"{0}","{1}","{2}"\n'.format(x, y, txt))
-
-def clear_string(s):
-    chars_to_remove = ('"', ' ', '\r', '\n', "'", ',', '.')
-    while len(s) != 0 and s[0] in chars_to_remove:
-        s = s[1:]
-    while len(s) != 0 and s[-1] in chars_to_remove:
-        s = s[:-1]
-    return s
-def load_map_descr():
-    Descr.clear()
-    try:
-        with open(mapdata_filename, "r") as datafile:
-            lines = datafile.readlines()
-        for line in lines:
-            chunks = line.split(sep=',')
-            if len(chunks) != 3:
-                continue
-            x = int(clear_string(chunks[0]))
-            y = int(clear_string(chunks[1]))
-            txt = clear_string(chunks[2])
-            Descr.append([x, y, txt])
-    except FileNotFoundError:
-        pass
-
-class DescDialog(QDialog):
-    def __init__(self, x, y, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Введите описание")
-        self.lblCoords = QtWidgets.QLabel()
-        self.lblCoords.setText("x={0}; y={1}".format(x, y))
-        self.lineeditDescr = QtWidgets.QLineEdit()
-        # Buttons
-        qbtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        self.buttonBox = QDialogButtonBox(qbtn)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        # Construct main layout
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.lblCoords)
-        self.layout.addWidget(self.lineeditDescr)
-        self.layout.addWidget(self.buttonBox)
-        self.setLayout(self.layout)
-
-class MapCanvas(QtWidgets.QLabel):
-    # Constants
-    coord_step = 20
-    font_sz_pix = 14
-
-    # Signals
-    mapclicked = pyqtSignal(int, int)
-    def __init__(self):
-        super().__init__()
-        # Pixmaps: clean one, with coords, with description, with both of them
-        self.clean_pix = QtGui.QPixmap(".\\img/map.png")
-        self.coords_pix = QtGui.QPixmap(".\\img/map.png")
-        self.descr_pix = QtGui.QPixmap(".\\img/map.png")
-        self.coords_descr_pix = QtGui.QPixmap(".\\img/map.png")
-        # Variables
-        self.must_show_coords = True
-        self.must_show_descrip = True
-        self.map_x = None
-        self.map_y = None
-        # Show map primitives
-        self.draw_coords(self.coords_pix)
-        self.draw_coords(self.coords_descr_pix)
-        self.draw_descr(self.descr_pix)
-        self.draw_descr(self.coords_descr_pix)
-        # Show what needed
-        self.redraw_needed_map()
-
-    def get_backgnd_pen(self):
-        pen = QtGui.QPen()
-        pen.setWidth(1)
-        pen.setStyle(Qt.PenStyle.DotLine)
-        pen.setColor(Qt.GlobalColor.darkGray)
-        return pen
-
-    def get_foregnd_pen(self):
-        pen = QtGui.QPen()
-        pen.setWidth(1)
-        pen.setStyle(Qt.PenStyle.SolidLine)
-        pen.setColor(Qt.GlobalColor.red)
-        return pen
-
-    def prepare_descr_font(self, painter):
-        font = QtGui.QFont()
-        font.setFamily("Comic Sans MS")
-        font.setPixelSize(self.font_sz_pix)
-        painter.setFont(font)
-        pen = QtGui.QPen()
-        pen.setWidth(1)
-        pen.setColor(Qt.GlobalColor.white)
-        painter.setPen(pen)
-
-    def draw_coords(self, apixmap):
-        xmax = apixmap.width()
-        ymax = apixmap.height()
-        painter = QtGui.QPainter(apixmap)
-        # Lines
-        painter.setPen(self.get_backgnd_pen())
-        for x in range(0, xmax, self.coord_step):
-            painter.drawLine(x, 0, x, ymax)
-        for y in range(0, ymax, self.coord_step):
-            painter.drawLine(0, y, xmax, y)
-        # Letters
-        font = QtGui.QFont()
-        font.setFamily("Comic Sans MS")
-        font.setPixelSize(self.font_sz_pix)
-        painter.setFont(font)
-        pen = QtGui.QPen()
-        pen.setWidth(1)
-        pen.setColor(Qt.GlobalColor.white)
-        painter.setPen(pen)
-        xmap = 1
-        ybottom = (ymax // self.coord_step) * self.coord_step - 4
-        for x in range(self.coord_step, xmax, self.coord_step):
-            if xmax - x < self.coord_step:
-                break
-            offset = (self.coord_step // 2) - 4 if xmap <= 9 else 1
-            painter.drawText(x + offset, ybottom, str(xmap))
-            xmap += 1
-        ymap = 1
-        for y in range(self.coord_step - 4, ymax, self.coord_step):
-            if y >= ybottom:
-                break
-            offset = (self.coord_step // 2) - 4 if ymap <= 9 else 4
-            painter.drawText(offset, y, str(ymap))
-            ymap += 1
-        painter.end()
-
-    def draw_descr(self, apixmap):
-        painter = QtGui.QPainter(apixmap)
-        self.prepare_descr_font(painter) # Setup font
-        for d in Descr:
-            painter.drawText(d[0], d[1], d[2])
-        painter.end()
-
-    def redraw_needed_map(self):
-        if self.must_show_coords and self.must_show_descrip:
-            self.setPixmap(self.coords_descr_pix)
-        elif self.must_show_coords:
-            self.setPixmap(self.coords_pix)
-        elif self.must_show_descrip:
-            self.setPixmap(self.descr_pix)
-        else:
-            self.setPixmap(self.clean_pix)
-
-    def draw_rect(self):
-        canvas = self.pixmap()
-        painter = QtGui.QPainter(canvas)
-        # Draw selected rect
-        painter.setPen(self.get_foregnd_pen())
-        x = self.map_x * self.coord_step
-        y = (self.map_y - 1) * self.coord_step
-        painter.drawRect(x, y, self.coord_step, self.coord_step)
-        painter.end()
-        self.setPixmap(canvas)
-
-    def on_map_settings_change(self, show_coords, show_descrip):
-        self.must_show_coords = show_coords
-        self.must_show_descrip = show_descrip
-        self.redraw_needed_map()
-        # Redraw what selected
-        if self.map_x is not None:
-            self.draw_rect()
-
-    def on_rightbtn_click(self, x, y):
-        dlg = DescDialog(x, y, parent=self)
-        if dlg.exec():
-            txt = dlg.lineeditDescr.text()
-            descr_append_and_save(x, y, txt)
-            # Draw on descr and coords_descr
-            painter = QtGui.QPainter(self.descr_pix)
-            self.prepare_descr_font(painter)
-            painter.drawText(x, y, txt)
-            painter = QtGui.QPainter(self.coords_descr_pix)
-            self.prepare_descr_font(painter)
-            painter.drawText(x, y, txt)
-            # Show what needed
-            self.redraw_needed_map()
-
-    def mousePressEvent(self, evt: QtGui.QMouseEvent):
-        pix_x = int(round(evt.position().x()))
-        pix_y = int(round(evt.position().y()))
-        if evt.button() == Qt.MouseButton.RightButton:
-            self.on_rightbtn_click(pix_x, pix_y)
-            return
-        # Otherwise proceed
-        self.map_x = pix_x // self.coord_step
-        self.map_y = pix_y // self.coord_step + 1
-        # Show clean map and draw rect
-        self.redraw_needed_map()
-        self.draw_rect()
-        # Emit signal
-        self.mapclicked.emit(self.map_x, self.map_y)
-
 class MapDialog(QDialog):
     # Variables to export
     x, y = None, None
@@ -295,7 +92,7 @@ class MapDialog(QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         # Map
-        self.maplbl = MapCanvas()
+        self.maplbl = MapWidget(mapdata_filename)
         self.maplbl.mapclicked.connect(self.on_selection)
         # Settings
         self.cbShowGrid = QtWidgets.QCheckBox()
@@ -476,7 +273,6 @@ class DiaStart(QMainWindow, PKLWindow.Ui_mainDialog):
         self.restart_and_clear_all()
 
 load_database()
-load_map_descr()
 
 app = QtWidgets.QApplication([])
 
